@@ -74,6 +74,7 @@ def filter_obj_to_query(f):
 
 
 def filter_text_to_query(filter_text):
+    filter_text = filter_text.replace(' ', '')
     q = filter_obj_to_query(ldapfilter.parseFilter(filter_text))
     if not q:
         raise ldaperrors.LDAPInappropriateMatching(filter_text)
