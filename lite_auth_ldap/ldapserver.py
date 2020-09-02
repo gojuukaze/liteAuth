@@ -24,7 +24,8 @@ class BaseLiteAuthServer(BaseLDAPServer):
         if controls is not None:
             for control_type, criticality, control_value in controls:
                 # 把control_value转为str，否则http请求时会报错
-                ctls.append((control_type, criticality, str(control_value, encoding='utf-8')))
+                ctls.append((control_type, criticality,
+                             str(control_value, encoding='utf-8') if control_value else control_value))
         return ctls
 
 
