@@ -31,7 +31,7 @@ def get_k_v_from_filter_obj(f):
         raise NotImplementedError('Filter type not supported %r' % f)
     k = settings.LDAP_FIELD_MAP.get(k, k)
     # 搜索的条件不存在，则返回 (id,-1) 防止orm报错
-    if k not in UserInfo.attrs_fields() + UserInfo.other_fields():
+    if k not in UserInfo.attrs_fields() + UserInfo.other_fields()+['groups']:
         return 'id', -1
 
     if k == 'groups':
