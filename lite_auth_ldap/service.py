@@ -6,7 +6,7 @@ from lite_auth_ldap.handler import LiteAuthHandler
 
 
 class LiteAutLDAPService(service.Service):
-    def __init__(self, portNum, ip, debug):
+    def __init__(self, portNum, ip, debug=True):
         self.portNum = portNum
         self.interface = ip
         self.debug = debug

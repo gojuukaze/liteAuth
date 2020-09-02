@@ -17,5 +17,5 @@ application = service.Application("LiteAuth LDAP Application")
 application.setComponent(ILogObserver, textFileLogObserver(f))
 
 ip, port = config.LDAP_LISTEN.split(':')
-service = LiteAutLDAPService(int(port), ip, config.DEBUG)
+service = LiteAutLDAPService(int(port), ip)
 service.setServiceParent(application)
