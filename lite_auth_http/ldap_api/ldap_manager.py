@@ -31,6 +31,9 @@ def get_k_v_from_filter_obj(f):
         raise NotImplementedError('Filter type not supported %r' % f)
     k = settings.LDAP_FIELD_MAP.get(k, k)
 
+    if k == 'groups':
+        k = 'groups__gid'
+
     return k, v
 
 
