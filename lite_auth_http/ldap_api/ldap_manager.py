@@ -37,7 +37,7 @@ def get_k_v_from_filter_obj(f):
     return k, v
 
 
-def filter_obj_to_query(f):
+def filter_obj_to_tree(f):
     tree = None
     if isinstance(f, pureldap.LDAPFilter_present):
         tree = Q()
@@ -52,8 +52,9 @@ def filter_obj_to_query(f):
         k, v = get_k_v_from_filter_obj(f)
         tree = Q(**{k + '__lte': v})
     elif isinstance(f, pureldap.LDAPFilter_not):
-        tree = ~filter_obj_to_query(f.value)
+        tree = ~filter_obj_to_tree(f.value)
     elif isinstance(f, pureldap.LDAPFilter_substrings):
+        tree = Q()
         k, _ = get_k_v_from_filter_obj(f)
         for sub in f.substrings:
             if isinstance(sub, pureldap.LDAPFilter_substrings_initial):
@@ -65,20 +66,21 @@ def filter_obj_to_query(f):
             else:
                 return None
     else:
+        tree = Q()
         if isinstance(f, pureldap.LDAPFilter_and):
             for filt in f:
-                tree &= filter_obj_to_query(filt)
+                tree &= filter_obj_to_tree(filt)
         elif isinstance(f, pureldap.LDAPFilter_or):
             for filt in f:
-                tree |= filter_obj_to_query(filt)
+                tree |= filter_obj_to_tree(filt)
         else:
             return None
-    return UserInfo.objects.filter(tree)
+    return tree
 
 
 def filter_text_to_query(filter_text):
     filter_text = filter_text.replace(' ', '')
-    q = filter_obj_to_query(ldapfilter.parseFilter(filter_text))
-    if not q:
+    tree = filter_obj_to_tree(ldapfilter.parseFilter(filter_text))
+    if not tree:
         raise ldaperrors.LDAPInappropriateMatching(filter_text)
-    return q
+    return UserInfo.objects.filter(tree)
