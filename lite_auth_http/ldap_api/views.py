@@ -44,6 +44,8 @@ def search_view(request):
 
     if not filter_text:
         return json_response(data=[])
+    if '*' in attributes:
+        attributes = None
     try:
         data, controls = search(user, filter_text, attributes, controls)
         return json_response(data={'users': data, 'controls': controls})
