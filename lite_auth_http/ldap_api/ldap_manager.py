@@ -30,6 +30,9 @@ def get_k_v_from_filter_obj(f):
     else:
         raise NotImplementedError('Filter type not supported %r' % f)
     k = settings.LDAP_FIELD_MAP.get(k, k)
+    # 搜索的条件不存在，且值也不为*，则返回 (id,-1) 防止orm报错
+    if k not in UserInfo.attrs_fields() + UserInfo.other_fields() and v != '*':
+        return 'id', -1
 
     if k == 'groups':
         k = 'groups__gid'
@@ -38,12 +41,13 @@ def get_k_v_from_filter_obj(f):
 
 
 def filter_obj_to_tree(f):
-    tree = None
+    tree = Q()
     if isinstance(f, pureldap.LDAPFilter_present):
-        tree = Q()
+        pass
     elif isinstance(f, pureldap.LDAPFilter_equalityMatch):
         k, v = get_k_v_from_filter_obj(f)
-        tree = Q(**{k: v})
+        if v != '*':
+            tree = Q(**{k: v})
 
     elif isinstance(f, pureldap.LDAPFilter_greaterOrEqual):
         k, v = get_k_v_from_filter_obj(f)
@@ -54,7 +58,6 @@ def filter_obj_to_tree(f):
     elif isinstance(f, pureldap.LDAPFilter_not):
         tree = ~filter_obj_to_tree(f.value)
     elif isinstance(f, pureldap.LDAPFilter_substrings):
-        tree = Q()
         k, _ = get_k_v_from_filter_obj(f)
         for sub in f.substrings:
             if isinstance(sub, pureldap.LDAPFilter_substrings_initial):
@@ -66,7 +69,6 @@ def filter_obj_to_tree(f):
             else:
                 return None
     else:
-        tree = Q()
         if isinstance(f, pureldap.LDAPFilter_and):
             for filt in f:
                 tree &= filter_obj_to_tree(filt)
