@@ -29,7 +29,7 @@ def get_k_v_from_filter_obj(f):
         v = ''
     else:
         raise NotImplementedError('Filter type not supported %r' % f)
-    k = settings.LdapFieldMap.get(k, k)
+    k = settings.LDAP_FIELD_MAP.get(k, k)
 
     return k, v
 
