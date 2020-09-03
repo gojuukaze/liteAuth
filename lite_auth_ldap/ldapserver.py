@@ -101,15 +101,25 @@ class LiteAuthLDAPServer(BaseLiteAuthServer):
 
     fail_LDAPSearchRequest = pureldap.LDAPSearchResultDone
 
+    def getRootDSE(self, request, reply):
+        reply(pureldap.LDAPSearchResultEntry(
+            objectName='',
+            attributes=[('supportedLDAPVersion', ['3']),
+                        ('namingContexts', ['dc=liteauth']),
+                        ('supportedExtension', [b'1.2.840.113556.1.4.319'])]
+        ))
+        return pureldap.LDAPSearchResultDone(
+            resultCode=ldaperrors.Success.resultCode)
+
     def handle_LDAPSearchRequest(self, request, controls, reply):
         ctls = self.checkControls(controls)
         if self.cookies is None:
             raise ldaperrors.LDAPInsufficientAccessRights()
 
-        # if (request.baseObject == b''
-        #         and request.scope == pureldap.LDAP_SCOPE_baseObject
-        #         and request.filter == pureldap.LDAPFilter_present('objectClass')):
-        #     return self.getRootDSE(request, reply)
+        if (request.baseObject == b''
+                and request.scope == pureldap.LDAP_SCOPE_baseObject
+                and request.filter == pureldap.LDAPFilter_present('objectClass')):
+            return self.getRootDSE(request, reply)
 
         handler = self.factory.handler
         d = self._search(handler, request, ctls, reply)
