@@ -50,7 +50,7 @@ LDAP_API_URL = 'http://127.0.0.1:8300'
 # (如果出现需要修改此项才能正常返回的情况，请反馈给我)
 LDAP_API_TIMEOUT = 3
 
-# LDAP_API登录凭证的有效期，秒
+# LDAP_API登录凭证的有效期，秒 (同时也是ldap连接的超时时间)
 # ldap_bind会获取登录凭证以供后续请求验证身份
 LDAP_API_AUTH_EXPIRY = 60
 

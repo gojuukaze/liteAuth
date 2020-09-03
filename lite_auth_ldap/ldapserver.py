@@ -6,7 +6,10 @@ from ldaptor.protocols import pureldap
 from ldaptor.protocols.ldap import ldaperrors, distinguishedname
 from ldaptor.protocols.ldap.ldapserver import BaseLDAPServer, LDAPServerConnectionLostException
 from twisted.internet import defer
+from twisted.protocols import policies
 from twisted.python import log
+
+import config
 
 
 class BaseLiteAuthServer(BaseLDAPServer):
@@ -29,8 +32,12 @@ class BaseLiteAuthServer(BaseLDAPServer):
         return ctls
 
 
-class LiteAuthLDAPServer(BaseLiteAuthServer):
+class LiteAuthLDAPServer(policies.TimeoutMixin, BaseLiteAuthServer):
     cookies = None
+
+    def connectionMade(self):
+        super().connectionMade()
+        self.setTimeout(config.LDAP_API_AUTH_EXPIRY - 1)
 
     fail_LDAPBindRequest = pureldap.LDAPBindResponse
 
@@ -105,6 +112,7 @@ class LiteAuthLDAPServer(BaseLiteAuthServer):
         reply(pureldap.LDAPSearchResultEntry(
             objectName='',
             attributes=[('supportedLDAPVersion', ['3']),
+                        ('objectClass', ['LiteAuthLDAProotDSE']),
                         ('namingContexts', ['dc=liteauth']),
                         ('supportedExtension', [b'1.2.840.113556.1.4.319'])]
         ))
@@ -113,13 +121,15 @@ class LiteAuthLDAPServer(BaseLiteAuthServer):
 
     def handle_LDAPSearchRequest(self, request, controls, reply):
         ctls = self.checkControls(controls)
-        if self.cookies is None:
-            raise ldaperrors.LDAPInsufficientAccessRights()
 
         if (request.baseObject == b''
                 and request.scope == pureldap.LDAP_SCOPE_baseObject
-                and request.filter == pureldap.LDAPFilter_present('objectClass')):
+                and isinstance(request.filter, pureldap.LDAPFilter_present)
+                and request.filter.value.lower() == b'objectclass'):
             return self.getRootDSE(request, reply)
+
+        if self.cookies is None:
+            raise ldaperrors.LDAPInsufficientAccessRights()
 
         handler = self.factory.handler
         d = self._search(handler, request, ctls, reply)
