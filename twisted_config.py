@@ -11,10 +11,11 @@ import config
 
 from lite_auth_ldap.service import LiteAutLDAPService
 
-f = LogFile('ldap.log', config.LOG_PATH, rotateLength=config.LOG_MAX_BYTES, maxRotatedFiles=config.LOG_BACKUP_COUNT)
 
 application = service.Application("LiteAuth LDAP Application")
-application.setComponent(ILogObserver, textFileLogObserver(f))
+if not config.DEBUG:
+    f = LogFile('ldap.log', config.LOG_PATH, rotateLength=config.LOG_MAX_BYTES, maxRotatedFiles=config.LOG_BACKUP_COUNT)
+    application.setComponent(ILogObserver, textFileLogObserver(f))
 
 ip, port = config.LDAP_LISTEN.split(':')
 service = LiteAutLDAPService(int(port), ip)
