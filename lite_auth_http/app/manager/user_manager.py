@@ -17,9 +17,9 @@ def confirm_login_allowed(user, password, check_password_expired=True):
         if user_info.is_lock():
             notify_user(user, NotificationType.UserLocked)
         else:
-            notify_user(user, NotificationType.LoginFailure,login_count=user_info.try_count)
+            notify_user(user, NotificationType.LoginFailure, login_count=user_info.try_count)
         raise login_exceptions.Invalid(login_count=user_info.try_count)
 
     if check_password_expired and user_info.is_password_expired():
-        notify_user(user, NotificationType.PasswordExpired, days=0)
+        notify_user(user, NotificationType.PasswordExpiration, days=0)
         raise login_exceptions.PasswordExpired()

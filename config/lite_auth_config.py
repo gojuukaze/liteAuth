@@ -11,7 +11,9 @@ ADMIN_URL = 'admin/'
 # 非属性字段用户是不能自己修改的，不用添加
 READONLY_ATTRIBUTES = ['mail']
 
-# 通知backend，用户发送密码过期，账户锁定等通知给用户。
+# ------ 通知 -------
+
+# 通知backend，用于发送密码过期，账户锁定等通知给用户。
 # 目前支持 Email(只支持smtp)，FeiShu
 # 如果使用自定义的backend，key为绝对路径
 NOTIFICATION_BACKEND = {
@@ -26,6 +28,14 @@ NOTIFICATION_BACKEND = {
     #     'app_id': 't_xx',
     #     'app_secret': 'xx'
     # },
+}
+
+# 密码过期通知
+PASSWORD_EXPIRATION_NOTIFICATION = {
+    # 运行时间
+    'crontab': '0 8 * * *',
+    # 还剩几天时发通知
+    'days': [30, 10, 7, 3, 2, 1]
 }
 
 """

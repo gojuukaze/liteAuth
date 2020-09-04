@@ -34,8 +34,8 @@ def get_notification_backends():
 def notify_user(user, type, **kwargs):
     try:
         for b in get_notification_backends():
-            if type == NotificationType.PasswordExpired:
-                b.send_password_expired_msg(user, **kwargs)
+            if type == NotificationType.PasswordExpiration:
+                b.send_password_expiration_msg(user, **kwargs)
             elif type == NotificationType.LoginFailure:
                 b.send_login_failure_msg(user, **kwargs)
             elif type == NotificationType.UserLocked:

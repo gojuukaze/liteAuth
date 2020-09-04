@@ -5,3 +5,4 @@ treq==20.4.1
 jsonfield==3.1.0
 requests==2.24.0
 gevent==20.6.2
+django-crontab==0.7.1

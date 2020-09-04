@@ -1,4 +1,4 @@
 class NotificationType:
-    PasswordExpired = 0
+    PasswordExpiration = 0
     LoginFailure = 1
     UserLocked = 2

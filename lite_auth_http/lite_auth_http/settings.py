@@ -44,6 +44,10 @@ LOGGING = {
         'simple2': {
             'format': '{asctime} {message}',
             'style': '{',
+        },
+        'only_message': {
+            'format': '{message}',
+            'style': '{',
         }
     },
 
@@ -74,7 +78,7 @@ LOGGING = {
             'level': 'INFO',
             'class': 'logging.handlers.RotatingFileHandler',
             'filename': os.path.join(LOG_PATH, 'cron.log'),
-            'formatter': 'verbose',
+            'formatter': 'only_message',
             'maxBytes': LOG_MAX_BYTES,
             'backupCount': LOG_BACKUP_COUNT,
         }
@@ -109,3 +113,10 @@ LOGGING = {
 
     }
 }
+
+CRONTAB_DJANGO_PROJECT_NAME = 'LiteAuth'
+if 'crontab' in PASSWORD_EXPIRATION_NOTIFICATION:
+    CRONJOBS = [
+        (PASSWORD_EXPIRATION_NOTIFICATION['crontab'], 'django.core.management.call_command',
+         ['notify_password_expiration']),
+    ]

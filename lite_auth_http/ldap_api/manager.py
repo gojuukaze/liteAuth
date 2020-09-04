@@ -56,7 +56,7 @@ def get_user_info_dict(user_info, attributes=None, exclude=None):
 
 
 """
-raise的错误说明参考：https://ldapwiki.com/wiki/LDAP%20Result%20Codes
+ldap的错误说明参考：https://ldapwiki.com/wiki/LDAP%20Result%20Codes
 """
 
 
@@ -68,18 +68,6 @@ def bind(dn, password):
     if not user:
         raise ldaperrors.LDAPNoSuchObject(dn)
 
-    # user_info = user.user_info
-    # 
-    # if not user_info.is_active:
-    #     raise ldaperrors.LDAPNoSuchObject(dn)
-    # if not user.check_password(password):
-    #     user_info.add_try_count()
-    #     raise ldaperrors.LDAPInvalidCredentials()
-    # 
-    # if user_info.is_lock():
-    #     raise ldaperrors.LDAPInvalidCredentials('tooManyLoginAttempts')
-    # if user_info.is_password_expired():
-    #     raise ldaperrors.LDAPInvalidCredentials('passwordExpired')
     try:
         confirm_login_allowed(user, password)
     except login_exceptions.Inactive:
@@ -89,7 +77,7 @@ def bind(dn, password):
     except login_exceptions.TooManyLoginAttempts:
         raise ldaperrors.LDAPInvalidCredentials('tooManyLoginAttempts')
     except login_exceptions.PasswordExpired:
-        raise ldaperrors.LDAPInvalidCredentials('passwordExpired')
+        raise ldaperrors.LDAPInvalidCredentials('passwordExpiration')
 
     return user, get_user_info_dict(user.user_info, attributes=[])
 

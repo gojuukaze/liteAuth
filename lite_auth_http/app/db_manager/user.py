@@ -16,3 +16,7 @@ def get_user_by_uid(uid) -> User:
 
 def authenticate_user(uid, password) -> User:
     return authenticate(username=uid, password=password)
+
+
+def all_user():
+    return User.objects.all()

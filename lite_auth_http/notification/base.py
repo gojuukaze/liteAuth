@@ -31,11 +31,11 @@ class BaseBackend(object):
     def cache_get(self, key):
         return cache.get(key)
 
-    def send_password_expired_msg(self, user, days):
+    def send_password_expiration_msg(self, user, days):
         if days > 0:
-            self.send(user, 'LiteAuth密码过期', '你的LiteAuth密码将在%d天后过期，请尽快登陆管理后台修改。' % days)
+            self.send(user, 'LiteAuth密码过期', '你的LiteAuth账户（%s）密码将在%d天后过期，请尽快登陆管理后台修改。' % (user.username, days))
         else:
-            self.send(user, 'LiteAuth密码过期', '你的LiteAuth密码已过期，账户已限制登陆，在管理后台重置密码后可用。')
+            self.send(user, 'LiteAuth密码过期', '你的LiteAuth账户（%s）密码已过期，账户已限制登陆，在管理后台重置密码后可用。' % user.username)
 
     def send_login_failure_msg(self, user, login_count):
         if settings.MAX_LOGIN_ATTEMPT_NUM > 3 and settings.MAX_LOGIN_ATTEMPT_NUM - login_count > 3:
