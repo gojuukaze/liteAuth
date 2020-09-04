@@ -17,11 +17,7 @@ class UserPasswordChangeView(PasswordChangeView):
 
     def form_valid(self, form):
         with transaction.atomic():
-            user = form.save()
-            user_info = form.user.user_info
-            user_info.password_update_date = get_today_date()
-            user_info.save()
-            user_info.password_history.add_password(user.password)
+            form.save()
         from django.contrib.auth import update_session_auth_hash
         update_session_auth_hash(self.request, form.user)
         return FormView.form_valid(self, form)

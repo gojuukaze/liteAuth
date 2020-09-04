@@ -23,6 +23,7 @@ from lite_auth_http.app.admin_actions import delete_selected
 from lite_auth_http.app.admin_mixin import UserFormMixin, PermissionMixin, DeleteMixin
 from lite_auth_http.app.forms import ChangeUserPasswordForm
 from lite_auth_http.app.models import UserInfo, Group, User, PasswordHistory
+from utils.datetime_helper import get_today_date
 
 admin.site.disable_action('delete_selected')
 admin.site.add_action(delete_selected)
@@ -208,7 +209,8 @@ class LiteAuthUserAdmin(PermissionMixin, AuthUserAdmin):
         if request.method == 'POST':
             form = self.change_password_form(user, request.POST)
             if form.is_valid():
-                form.save()
+                with transaction.atomic():
+                    form.save()
                 change_message = self.construct_change_message(request, form, None)
                 self.log_change(request, user, change_message)
                 msg = _('Password changed successfully.')

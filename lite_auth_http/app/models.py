@@ -35,6 +35,13 @@ class User(AbstractUser):
     def get_short_name(self):
         return self.user_info.name
 
+    def set_password(self, raw_password):
+        super().set_password(raw_password)
+        user_info = self.user_info
+        user_info.password_update_date = get_today_date()
+        user_info.save()
+        user_info.password_history.add_password(self.password)
+
 
 class UserInfo(models.Model):
     class Meta:
