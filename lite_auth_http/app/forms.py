@@ -60,7 +60,6 @@ class ChangeUserPasswordForm(AdminPasswordChangeForm):
         assert commit is True
         password = self.cleaned_data["password1"]
         self.user.set_password(password)
-        self.user.user_info.password_history.add_password(self.user.password)
         self.user.save()
         return self.user
 
