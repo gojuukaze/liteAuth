@@ -24,31 +24,7 @@ from lite_auth_http.app.admin_mixin import UserFormMixin, PermissionMixin, Delet
 from lite_auth_http.app.forms import ChangeUserPasswordForm
 from lite_auth_http.app.models import UserInfo, Group, User, PasswordHistory
 
-# from django.core import serializers
-# from django.http import HttpResponse
-
-# def export_as_json(modeladmin, request, queryset):
-#     response = HttpResponse(content_type="application/json")
-#     serializers.serialize("json", queryset, stream=response)
-#     return response
-
-# from django.contrib.contenttypes.models import ContentType
-# from django.http import HttpResponseRedirect
-# 
-# 
-# def export_selected_objects(modeladmin, request, queryset):
-#     selected = queryset.values_list('pk', flat=True)
-#     ct = ContentType.objects.get_for_model(queryset.model)
-#     return HttpResponseRedirect('/export/?ct=%s&ids=%s' % (
-#         ct.pk,
-#         ','.join(str(pk) for pk in selected),
-#     ))
-# 
-# 
-# admin.site.add_action(export_selected_objects)
-# admin.site.add_action(export_selected_objects, 'export_selected')
 admin.site.disable_action('delete_selected')
-
 admin.site.add_action(delete_selected)
 
 
