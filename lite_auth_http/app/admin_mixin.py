@@ -9,7 +9,7 @@ from django.template.response import TemplateResponse
 from django.urls import reverse
 from django.utils.translation import gettext as _, gettext_lazy
 
-from lite_auth_http.app.forms import UserAddForm
+from lite_auth_http.app.admin_forms import UserAddForm
 from lite_auth_http.app.models import UserInfo, User, PasswordHistory
 from django.contrib import admin, messages
 

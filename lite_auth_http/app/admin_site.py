@@ -12,7 +12,7 @@ from django.urls import reverse
 from django.views.decorators.cache import never_cache
 
 from lite_auth_http.app.admin_actions import delete_selected
-from lite_auth_http.app.forms import AdminLoginForm
+from lite_auth_http.app.admin_forms import AdminLoginForm
 
 
 class LiteAuthAdminSite(AdminSite):

@@ -21,7 +21,7 @@ from django.utils.safestring import mark_safe
 from lite_auth_http import consts
 from lite_auth_http.app.admin_actions import delete_selected
 from lite_auth_http.app.admin_mixin import UserFormMixin, PermissionMixin, DeleteMixin
-from lite_auth_http.app.forms import ChangeUserPasswordForm
+from lite_auth_http.app.admin_forms import ChangeUserPasswordForm
 from lite_auth_http.app.models import UserInfo, Group, User, PasswordHistory
 from utils.datetime_helper import get_today_date
 

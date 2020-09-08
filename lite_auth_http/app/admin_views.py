@@ -3,8 +3,6 @@ from django.contrib.auth.views import PasswordChangeView
 from django.db import transaction
 from django.views.generic import FormView
 
-from utils.datetime_helper import get_today_date
-
 
 class UserPasswordChangeView(PasswordChangeView):
     def get_context_data(self, **kwargs):
