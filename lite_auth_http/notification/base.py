@@ -31,6 +31,9 @@ class BaseBackend(object):
     def cache_get(self, key):
         return cache.get(key)
 
+    def cache_del(self, key):
+        return cache.delete(key)
+
     def send_password_expiration_msg(self, user, days):
         if days > 0:
             self.send(user, 'LiteAuth密码过期', '你的LiteAuth账户（%s）密码将在%d天后过期，请尽快登陆管理后台修改。' % (user.username, days))

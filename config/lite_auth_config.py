@@ -14,7 +14,7 @@ READONLY_ATTRIBUTES = ['mail']
 # ------ 通知 -------
 
 # 通知backend，用于发送密码过期，账户锁定等通知给用户。
-# 目前支持 Email(只支持smtp)，FeiShu
+# 目前支持 Email(只支持smtp)，FeiShu，SMS
 # 如果使用自定义的backend，key为绝对路径
 NOTIFICATION_BACKEND = {
     # 'Email': {
@@ -25,8 +25,19 @@ NOTIFICATION_BACKEND = {
     # },
 
     # 'FeiShu': {
-    #     'app_id': 't_xx',
+    #     'app_id': 'cli_xx',
     #     'app_secret': 'xx'
+    # },
+
+    # 短信，
+    # 由于不同短信服务商对接方式不一样，无法给个通用的短信backend，需要短信通知你可以自行开发个backend。
+    # 对于不熟悉python的公司，可以使用提供的SMS backend，你需要开发个新接口用于接收backend提交的发送短信的请求
+    # 这个接口的参数为：mobile, msg
+
+    # 'SMS': {
+    #     'url': 'http://xxx', # 你的接口地址
+    #     'method':'post', # 只支持 post, get
+    #     'json': True, # 提交json格式的数据
     # },
 }
 
@@ -34,7 +45,7 @@ NOTIFICATION_BACKEND = {
 PASSWORD_EXPIRATION_NOTIFICATION = {
     # 运行时间
     'crontab': '0 8 * * *',
-    # 还剩几天时发通知
+    # 还剩几天时发通知，不用写0
     'days': [30, 10, 7, 3, 2, 1]
 }
 
