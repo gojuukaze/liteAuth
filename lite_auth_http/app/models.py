@@ -2,11 +2,10 @@ from django import forms
 from django.conf import settings
 from django.contrib.auth.base_user import AbstractBaseUser
 from django.contrib.auth.models import AbstractUser
+from django.core.validators import RegexValidator
 from django.db import models
-from django.forms import model_to_dict
 from jsonfield.fields import JSONField
 from lite_auth_http import consts
-from lite_auth_http.app.validator import UidValidator
 from utils.datetime_helper import now, get_today_date
 
 
@@ -47,7 +46,7 @@ class UserInfo(models.Model):
     class Meta:
         verbose_name_plural = '用户'
 
-    uid_validator = UidValidator()
+    uid_validator = RegexValidator(regex=r'^[\w-]+\Z', message='uid只允许字母，数字，下划线（_），横杆（-）')
     uid = models.CharField('用户名/uid', max_length=50, unique=True,
                            help_text='用户的登录名，相当于ldap的 cn/uid/sn<br>「 %s 」' % uid_validator.message,
                            validators=[uid_validator])
@@ -140,8 +139,9 @@ class UserInfo(models.Model):
 class Group(models.Model):
     class Meta:
         verbose_name_plural = '组'
+    gid_validator = RegexValidator(regex=r'^[\w-]+\Z', message='gid只允许字母，数字，下划线（_），横杆（-）')
 
-    gid = models.CharField('组名/gid', max_length=30, unique=True)
+    gid = models.CharField('组名/gid', max_length=30, unique=True,validators=[gid_validator])
     desc = models.TextField('描述', default='', blank=True)
 
     users = models.ManyToManyField(
