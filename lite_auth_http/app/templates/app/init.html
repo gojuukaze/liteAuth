@@ -1,0 +1,109 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Lite Auth 初始化</title>
+    <link rel="stylesheet" href="{% static '/app/bulma.min.css' %}">
+    <link rel="stylesheet" href="{% static '/app/bulma-steps.min.css' %}">
+
+</head>
+<body>
+<section class="hero is-medium is-info ">
+    <div class="hero-body">
+        <div class="container">
+            <div class="columns">
+                <div class="column is-8-desktop is-offset-2-desktop">
+                    <h1 class="title is-2 is-spaced">
+                        Hello LiteAuth!
+                    </h1>
+                    <h2 class="subtitle is-4">
+                        欢迎使用 <strong>LiteAuth</strong> 你需要进行一些初始化配置
+                    </h2>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+        <div class="columns">
+            <div class="column is-8-desktop is-offset-2-desktop">
+                <form action="" method="post">
+                    {% csrf_token %}
+                    <div class="content">
+
+                        {% for f in new_form %}
+                            <h3>{{ f.title }}</h3>
+                            <hr>
+                            <div class="card">
+                                <div class="card-content">
+
+                                    {% for field in f.form %}
+
+                                        <div class="field is-horizontal">
+                                            <div class="field-label is-normal">
+                                                <label class="label">{{ field.label }}</label>
+                                            </div>
+                                            <div class="field-body">
+                                                <div class="field">
+                                                    {% for error in field.errors %}
+                                                        <p class="help is-danger">{{ error }}</p>
+                                                    {% endfor %}
+
+                                                    {{ field }}
+
+                                                    {% if field.help_text %}
+                                                        <p class="help">{{ field.help_text|safe }}</p>
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    {% endfor %}
+                                </div>
+                            </div>
+
+                        {% endfor %}
+
+
+                        <br>
+                        <div class="field has-addons has-addons-right">
+                            <div class="control ">
+                                <input type="submit" class="input button is-info " value="提交">
+                            </div>
+                        </div>
+
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+<footer class="footer has-text-centered">
+    <div class="container">
+        <div class="columns">
+            <div class="column is-8-desktop is-offset-2-desktop">
+                <p>
+                    <strong class="has-text-weight-semibold">
+                        <a href="https://github.com/gojuukaze/liteAuth">LiteAuth</a>
+                    </strong>
+                    {{ version }}
+                </p>
+                <p>
+                    <small>
+                        Source code licensed <a href="https://github.com/gojuukaze/liteAuth/blob/master/LICENSE">GPL
+                        V3.0</a>
+                    </small>
+                </p>
+
+            </div>
+        </div>
+    </div>
+</footer>
+</body>
+</html>

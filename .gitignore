@@ -148,7 +148,7 @@ config/config.py
 
 *.pid
 
-static
+/static
 
 lite_auth_http/app/management/commands/mock2.py
 lite_auth_http/app/management/commands/mock.py

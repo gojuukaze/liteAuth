@@ -1,4 +1,7 @@
 from lite_auth_http.app import login_exceptions
+from lite_auth_http.app.db_manager.password_history import create_password_history
+from lite_auth_http.app.db_manager.user_info import create_user_info
+from lite_auth_http.app.models import User
 from lite_auth_http.notification.consts import NotificationType
 from lite_auth_http.notification.manager import notify_user
 
@@ -23,3 +26,13 @@ def confirm_login_allowed(user, password, check_password_expired=True):
     if check_password_expired and user_info.is_password_expired():
         notify_user(user, NotificationType.PasswordExpiration, days=0)
         raise login_exceptions.PasswordExpired()
+
+
+def new_user(uid, name, password, groups=None):
+    u = User(username=uid, is_active=True)
+    u.set_password(password)
+    u.save()
+    ui = create_user_info(u.id, uid, name)
+    create_password_history(uid, password=[u.password])
+    if groups:
+        ui.groups.set(groups)

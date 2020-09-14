@@ -1,6 +1,9 @@
 from lite_auth_http.lite_auth_http.settings_common import *
 from config import *
 
+if not DEBUG:
+    ALLOWED_HOSTS = [LITE_AUTH_URL]
+
 M_APPS = [
     'lite_auth_http.app',
     'lite_auth_http.app.apps.LiteAuthAdminConfig'

@@ -36,15 +36,18 @@ class User(AbstractUser):
 
     def set_password(self, raw_password):
         super().set_password(raw_password)
-        user_info = self.user_info
-        user_info.password_update_date = get_today_date()
-        user_info.save()
-        user_info.password_history.add_password(self.password)
+        # 没有id，说明是创建用户
+        if self.id:
+            user_info = self.user_info
+            user_info.password_update_date = get_today_date()
+            user_info.save()
+            user_info.password_history.add_password(self.password)
 
 
 class UserInfo(models.Model):
     class Meta:
         verbose_name_plural = '用户'
+        verbose_name = '用户'
 
     uid_validator = RegexValidator(regex=r'^[\w-]+\Z', message='uid只允许字母，数字，下划线（_），横杆（-）')
     uid = models.CharField('用户名/uid', max_length=50, unique=True,
@@ -139,9 +142,10 @@ class UserInfo(models.Model):
 class Group(models.Model):
     class Meta:
         verbose_name_plural = '组'
+
     gid_validator = RegexValidator(regex=r'^[\w-]+\Z', message='gid只允许字母，数字，下划线（_），横杆（-）')
 
-    gid = models.CharField('组名/gid', max_length=30, unique=True,validators=[gid_validator])
+    gid = models.CharField('组名/gid', max_length=30, unique=True, validators=[gid_validator])
     desc = models.TextField('描述', default='', blank=True)
 
     users = models.ManyToManyField(

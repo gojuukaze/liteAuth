@@ -4,6 +4,9 @@ DEBUG = False
 http server 配置
 """
 HTTP_LISTEN = '0.0.0.0:8300'
+# 访问lite auth的url，填ip或域名
+LITE_AUTH_URL = 'http://127.0.0.1:8300'
+
 # 一定要以 / 结尾
 ADMIN_URL = 'admin/'
 
@@ -58,6 +61,7 @@ LDAP_LISTEN = '0.0.0.0:8389'
 SEARCH_LIMIT = 1000
 
 # 用于ldap请求的用户名，此用户不能登录管理后台，相当于只读用户
+# 如果在初始化后修改了此项，你需要进admin手动修改uid
 LDAP_USER = 'ldap'
 
 # ----- LDAP_API -------
