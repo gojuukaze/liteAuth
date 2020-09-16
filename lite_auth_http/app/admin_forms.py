@@ -19,9 +19,9 @@ from utils.datetime_helper import str_to_date
 
 class UserAddForm(forms.ModelForm):
     """
-    直接新增用户时能用。
+    直接新增用户时能用。（一般来说别用这个form，用下面的 UserAddWithGroupsForm ）
 
-    为了兼容admin，保存时先调用save，再调用save_new_user
+    为了兼容admin，这个form保存时先调用save，再调用save_new_user
     如：
 
     form = UserAddForm()
@@ -32,7 +32,6 @@ class UserAddForm(forms.ModelForm):
 
     class Meta:
         model = UserInfo
-        # exclude = ['is_active', 'try_count', 'last_try_time', 'password_update_date']
         fields = '__all__'
 
     password = forms.CharField(label='密码/password', max_length=consts.MAX_PASSWORD_LENGTH,
@@ -56,6 +55,8 @@ class UserAddForm(forms.ModelForm):
 
     def full_clean(self):
         super().full_clean()
+        if not self.is_bound or (self.empty_permitted and not self.has_changed()):  # Stop further processing.
+            return
         try:
             self._clean_password()
         except forms.ValidationError as e:
@@ -66,6 +67,9 @@ class UserAddForm(forms.ModelForm):
             self.instance.password_update_date = d
 
     def save(self, commit=False):
+        """
+        commit只能为False
+        """
         return super(UserAddForm, self).save(False)
 
     def save_new_user(self, obj):
@@ -78,6 +82,50 @@ class UserAddForm(forms.ModelForm):
             from lite_auth_http.app.db_manager.password_history import create_password_history
             create_password_history(obj.uid, password=[user.password])
             return obj
+
+
+class UserAddWithGroupsForm(UserAddForm):
+    class Meta:
+        model = UserInfo
+        exclude = UserInfo.other_fields()[1:]
+        fields = '__all__'
+
+    groups = forms.CharField(max_length=300, initial='', required=False)
+
+    gid_validator = RegexValidator(regex=r'^[\w-]+\Z', message='只允许字母，数字，下划线（_），横杆（-）')
+
+    def clean_groups(self):
+        groups = self.cleaned_data['groups']
+        if not groups:
+            return []
+        result = []
+        for g in groups.split(','):
+            self.gid_validator(g)
+            result.append(g)
+        return result
+
+    groups_cache = {}
+
+    def get_group(self, gid):
+        if gid in self.groups_cache:
+            return self.groups_cache[gid]
+        from lite_auth_http.app.db_manager.group import get_or_create_group
+        g, _ = get_or_create_group(gid)
+        self.groups_cache[gid] = g
+        return g
+
+    def save(self, commit=True, groups_cache=None):
+        """
+        commit只能为true
+        """
+        if groups_cache:
+            self.groups_cache = groups_cache
+        with transaction.atomic():
+            user_info = super(UserAddWithGroupsForm, self).save(False)
+            user_info = self.save_new_user(user_info)
+            if self.cleaned_data['groups']:
+                groups = [self.get_group(g) for g in self.cleaned_data['groups']]
+                user_info.groups.set(groups)
 
 
 class ChangeUserPasswordForm(AdminPasswordChangeForm):
@@ -132,50 +180,6 @@ class AdminLoginForm(AdminAuthenticationForm):
             self.user_cache = user
 
         return self.cleaned_data
-
-
-class UserAddWithGroupsForm(UserAddForm):
-    class Meta:
-        model = UserInfo
-        exclude = UserInfo.other_fields()[1:]
-        fields = '__all__'
-
-    groups = forms.CharField(max_length=300, initial='', required=False)
-
-    gid_validator = RegexValidator(regex=r'^[\w-]+\Z', message='只允许字母，数字，下划线（_），横杆（-）')
-
-    def clean_groups(self):
-        groups = self.cleaned_data['groups']
-        if not groups:
-            return []
-        result = []
-        for g in groups.split(','):
-            self.gid_validator(g)
-            result.append(g)
-        return result
-
-    groups_cache = {}
-
-    def get_group(self, gid):
-        if gid in self.groups_cache:
-            return self.groups_cache[gid]
-        from lite_auth_http.app.db_manager.group import get_or_create_group
-        g, _ = get_or_create_group(gid)
-        self.groups_cache[gid] = g
-        return g
-
-    def save(self, commit=True, groups_cache=None):
-        """
-        commit只能为true
-        """
-        if groups_cache:
-            self.groups_cache = groups_cache
-        with transaction.atomic():
-            user_info = super(UserAddWithGroupsForm, self).save(False)
-            user_info = self.save_new_user(user_info)
-            if self.cleaned_data['groups']:
-                groups = [self.get_group(g) for g in self.cleaned_data['groups']]
-                user_info.groups.set(groups)
 
 
 class ImportUserForm(forms.Form):

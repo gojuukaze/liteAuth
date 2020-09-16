@@ -42,6 +42,7 @@ class Migration(migrations.Migration):
                 ('password_update_date', models.DateField(blank=True, default=utils.datetime_helper.now, verbose_name='上次修改密码日期')),
             ],
             options={
+                'verbose_name': '用户',
                 'verbose_name_plural': '用户',
             },
         ),

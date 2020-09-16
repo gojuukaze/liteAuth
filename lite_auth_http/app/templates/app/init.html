@@ -7,8 +7,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Lite Auth 初始化</title>
     <link rel="stylesheet" href="{% static '/app/bulma.min.css' %}">
-    <link rel="stylesheet" href="{% static '/app/bulma-steps.min.css' %}">
-
+    <style>
+        .help-list li{
+            list-style-type:none;
+        }
+        .help-list ul{
+            margin-left: 0;
+        }
+    </style>
 </head>
 <body>
 <section class="hero is-medium is-info ">
@@ -36,47 +42,38 @@
                     {% csrf_token %}
                     <div class="content">
 
-                        {% for f in new_form %}
-                            <h3>{{ f.title }}</h3>
+                        {% for form in forms %}
+                            <h3>{{ form.prefix }}</h3>
                             <hr>
                             <div class="card">
                                 <div class="card-content">
-
-                                    {% for field in f.form %}
-
-                                        <div class="field is-horizontal">
+                                    {% for field in form %}
+                                        <div class="field is-horizontal {% if field.is_hidden %}is-hidden{% endif %}" >
                                             <div class="field-label is-normal">
                                                 <label class="label">{{ field.label }}</label>
                                             </div>
                                             <div class="field-body">
                                                 <div class="field">
                                                     {% for error in field.errors %}
-                                                        <p class="help is-danger">{{ error }}</p>
+                                                        <div class="help is-danger help-list">{{ error }}</div>
                                                     {% endfor %}
-
                                                     {{ field }}
-
                                                     {% if field.help_text %}
-                                                        <p class="help">{{ field.help_text|safe }}</p>
+                                                        <div class="help help-list" >{{ field.help_text|safe }}</div>
                                                     {% endif %}
                                                 </div>
                                             </div>
                                         </div>
-
                                     {% endfor %}
                                 </div>
                             </div>
-
                         {% endfor %}
-
-
                         <br>
                         <div class="field has-addons has-addons-right">
                             <div class="control ">
                                 <input type="submit" class="input button is-info " value="提交">
                             </div>
                         </div>
-
                     </div>
                 </form>
             </div>
