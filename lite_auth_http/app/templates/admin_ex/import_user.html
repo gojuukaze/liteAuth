@@ -1,0 +1,39 @@
+{% extends "admin/base_site.html" %}
+{% load i18n admin_urls static %}
+{% block extrastyle %}{{ block.super }}
+    <link rel="stylesheet" type="text/css" href="{% static "admin/css/forms.css" %}">{% endblock %}
+
+
+{% block breadcrumbs %}
+    <div class="breadcrumbs">
+        <a href="{% url 'admin:index' %}">{% translate 'Home' %}</a>
+        &rsaquo; 导入用户
+    </div>
+{% endblock %}
+
+
+
+{% block nav-sidebar %}{% endblock %}
+
+{% block content %}
+    <div id="content-main">
+        <form enctype="multipart/form-data" method="post">
+            {% csrf_token %}
+            <fieldset class="module aligned">
+                {% for field in form %}
+                    <div class="form-row">
+                        {{ field.errors }}
+                        {{ field.label_tag }} {{ field }}
+                        <div class="help">样例 <a href="{% url 'admin:csv_demo' %}">demo.csv</a>
+                        </div>
+                    </div>
+                {% endfor %}
+            </fieldset>
+            <div class="submit-row">
+                <input type="submit" class="default">
+            </div>
+        </form>
+
+    </div>
+{% endblock %}
+

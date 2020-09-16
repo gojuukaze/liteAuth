@@ -28,11 +28,11 @@ def confirm_login_allowed(user, password, check_password_expired=True):
         raise login_exceptions.PasswordExpired()
 
 
-def new_user(uid, name, password, groups=None):
+def new_user(uid, name, password, groups=None, **user_info_attrs):
     u = User(username=uid, is_active=True)
     u.set_password(password)
     u.save()
-    ui = create_user_info(u.id, uid, name)
+    ui = create_user_info(u.id, uid, name, **user_info_attrs)
     create_password_history(uid, password=[u.password])
     if groups:
         ui.groups.set(groups)

@@ -83,13 +83,7 @@ class UserAdmin(UserFormMixin, PermissionMixin, DeleteMixin, admin.ModelAdmin):
 
     def save_model(self, request, obj, form, change):
         if not change:
-            with transaction.atomic():
-                user = form.user
-                user.save()
-                obj.id = user.id
-                obj.save()
-                from lite_auth_http.app.db_manager.password_history import create_password_history
-                create_password_history(obj.uid, password=[user.password])
+            form.save_new_user(obj)
         else:
             return obj.save()
 

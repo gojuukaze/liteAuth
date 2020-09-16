@@ -1,18 +1,16 @@
+import io
 from functools import update_wrapper
 
-from django.contrib import admin
-from django.contrib.admin.sites import all_sites
-from django.template.response import TemplateResponse
-from django.utils.translation import gettext as _, gettext_lazy
-
+from django.contrib import messages
 from django.contrib.admin import AdminSite
 from django.contrib.auth import REDIRECT_FIELD_NAME, logout
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseBadRequest, FileResponse
 from django.urls import reverse
 from django.views.decorators.cache import never_cache
+from django.views.decorators.csrf import csrf_exempt
 
 from lite_auth_http.app.admin_actions import delete_selected
-from lite_auth_http.app.admin_forms import AdminLoginForm
+from lite_auth_http.app.admin_forms import AdminLoginForm, ImportUserForm
 
 
 class LiteAuthAdminSite(AdminSite):
@@ -40,7 +38,7 @@ class LiteAuthAdminSite(AdminSite):
             defaults['template_name'] = self.password_change_template
         request.current_app = self.name
         # 改动: 修改了使用的view
-        from lite_auth_http.app.views import UserPasswordChangeView
+        from lite_auth_http.app.admin_views import UserPasswordChangeView
         return UserPasswordChangeView.as_view(**defaults)(request)
 
     def get_urls(self):
@@ -56,12 +54,45 @@ class LiteAuthAdminSite(AdminSite):
 
         from django.urls import path
         urlpatterns += [path('import_user/', wrap(self.import_user), name='import_user'),
+                        path('demo.csv', wrap(self.csv_demo), name='csv_demo'),
                         ]
 
         return urlpatterns
 
-    def import_user(self, request, extra_context=None):
-        if not request.user.is_admin():
-            return HttpResponse('<h1>无权限</h1>',status=400)
+    def csv_demo(self, request, extra_context=None):
+        if request.user.is_anonymous or not request.user.is_admin():
+            return HttpResponseBadRequest()
+        csv = b'uid,name,password\xef\xbc\x88\xe4\xbb\x8ecsv\xe5\xaf\xbc\xe5\x85\xa5\xe6\x97\xb6\xe4\xb8\x8d\xe4\xbc' \
+              b'\x9a\xe6\xa0\xa1\xe9\xaa\x8c\xe5\xaf\x86\xe7\xa0\x81\xef\xbc\x89,' \
+              b'\xe9\x87\x8d\xe7\xbd\xae\xe5\xaf\x86\xe7\xa0\x81\xe5\x90\x8e\xe5\x8f\xaf\xe7\x94\xa8\xef\xbc\x880:false' \
+              b'; 1:true\xef\xbc\x89,"groups\xef\xbc\x88\xe5\xa1\xabgid,' \
+              b'\xe5\xa4\x9a\xe4\xb8\xaagid\xe7\x94\xa8\xe9\x80\x97\xe5\x8f\xb7\xe5\x88\x86\xe9\x9a\x94\xef\xbc\x9b\xe4' \
+              b'\xb8\x8d\xe5\xad\x98\xe5\x9c\xa8\xe7\x9a\x84\xe7\xbb\x84\xe4\xbc\x9a\xe8\x87\xaa\xe5\x8a\xa8\xe5\x88' \
+              b'\x9b\xe5\xbb\xba\xef\xbc\x89",mobile,mail\r\nuser1,username,secert,1,"admin,group1",,\r\n '
 
-        return HttpResponse('<h1>待开发</h1>')
+        buffer = io.BytesIO(csv)
+        buffer.seek(0)
+        return FileResponse(buffer, as_attachment=True, filename='demo.csv')
+
+    @csrf_exempt
+    def import_user(self, request, extra_context=None):
+        if request.user.is_anonymous or not request.user.is_admin():
+            return HttpResponseBadRequest()
+
+        context = {
+            'extra_context': {**self.each_context(request), **(extra_context or {})},
+            'title': '从CSV导入用户',
+
+        }
+        context.update(extra_context or {})
+
+        defaults = {
+            'extra_context': context,
+            'template_name': 'admin_ex/import_user.html',
+            'form_class': ImportUserForm,
+            'success_url': reverse('admin:import_user', current_app=self.name)
+        }
+        request.current_app = self.name
+
+        from lite_auth_http.app.admin_views import ImportUserView
+        return ImportUserView.as_view(**defaults)(request)

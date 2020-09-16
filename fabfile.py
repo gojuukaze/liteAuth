@@ -20,10 +20,9 @@ def flush_db(c):
     for f in M_APPS:
         p = f.split('.')[1]
         apps.append(p)
-        c.run('rm -rf ' + os.path.join('lite_auth_http',p, 'migrations'))
+        c.run('rm -rf ' + os.path.join('lite_auth_http', p, 'migrations'))
     c.run('rm db.sqlite3', warn=True)
     c.run(local_py + ' manage.py makemigrations ' + ' '.join(apps))
     c.run(local_py + ' manage.py migrate')
-    c.run(local_py + ' manage.py mock')
+    # c.run(local_py + ' manage.py mock')
     c.run(local_py + ' manage.py createcachetable')
-
