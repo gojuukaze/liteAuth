@@ -1,3 +1,5 @@
+from urllib.parse import urljoin
+
 DEBUG = False
 
 """
@@ -67,7 +69,7 @@ LDAP_USER = 'ldap'
 # ----- LDAP_API -------
 
 # ldap server访问http server的路径
-LDAP_API_URL = 'http://127.0.0.1:8300'
+LDAP_API_URL = urljoin(LITE_AUTH_URL, ADMIN_URL)
 
 # LDAP_API请求的超时时间，秒
 # 一般不需要修改，
