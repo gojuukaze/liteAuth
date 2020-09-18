@@ -7,7 +7,7 @@ http server 配置
 """
 HTTP_LISTEN = '0.0.0.0:8300'
 # 访问lite auth的url，填ip或域名
-LITE_AUTH_URL = 'http://127.0.0.1:8300'
+LITE_AUTH_URL = 'http://127.0.0.1:8080'
 
 # 一定要以 / 结尾
 ADMIN_URL = 'admin/'
