@@ -51,6 +51,9 @@ def init(secret_key):
 
     make_migrations()
     line()
+
+    mkdir()
+    line()
     info('初始化完成')
 
 
@@ -91,6 +94,17 @@ def make_migrations():
         error('迁移数据库失败')
 
 
+def mkdir():
+    info('创建必要目录')
+    from config import LOG_PATH
+    try:
+        if not os.path.exists(LOG_PATH):
+            os.mkdir(LOG_PATH)
+    except:
+        error('创建日志目录失败，请手动创建目录 %s ，并给予权限' % LOG_PATH)
+    info('[完成]')
+
+
 @cli.command(help='生成随机secret_key')
 def gen_secret_key():
     from django.core.management.utils import get_random_secret_key
@@ -98,18 +112,21 @@ def gen_secret_key():
 
 
 @cli.command(help='启动服务')
-@click.argument('server', type=click.Choice(['all', 'ldap', 'http'], case_sensitive=False), default='all')
+@click.argument('server', type=click.Choice(['all', 'ldap', 'http', 'cron'], case_sensitive=False), default='all')
 @click.option('-n', '--nodaemon', is_flag=True, default=False, help='以非守护模式启动，带有此参数时需要单独启动http与ldap')
 def start(server, nodaemon):
     if nodaemon and server == 'all':
         error('非守护模式下需要单独启动http与ldap')
     if server == 'all':
-        server = ['ldap', 'http']
+        server = ['ldap', 'http', 'cron']
     if 'ldap' in server:
         start_ldap(nodaemon)
         line()
     if 'http' in server:
         start_http(nodaemon)
+        line()
+    if 'cron' in server:
+        start_cron()
         line()
 
 
@@ -143,6 +160,17 @@ def start_http(nodaemon):
         error('启动失败')
 
 
+def start_cron():
+    info('创建定时任务')
+
+    subprocess.run([local_py, 'manage.py', 'crontab', 'remove'])
+    r = subprocess.run([local_py, 'manage.py', 'crontab', 'add'])
+    if r.returncode == 0:
+        info('[完成]')
+    else:
+        error('创建定时任务失败，但这不影响其他服务的运行，如果不需要可忽略')
+
+
 @cli.command(help='服务状态')
 def status():
     for s, f in [['LDAP Server', 'twistd.pid'], ['HTTP Server', 'gunicorn.pid']]:
@@ -150,6 +178,10 @@ def status():
         info(s, False)
         info('  [运行]' if is_running else '  [关闭]')
         line()
+        
+    is_running = check_cron_status()
+    info('CRON Server  [运行]' if is_running else 'CRON Server    [关闭]')
+    line()
 
 
 def get_pid(pid_file):
@@ -168,12 +200,19 @@ def check_status(pid_file):
         return False
 
 
+def check_cron_status():
+    r = subprocess.run([local_py, 'manage.py', 'crontab', 'show'], capture_output=True)
+    if len(r.stdout.split(b'\n')) > 1:
+        return True
+    return False
+
+
 @cli.command(help='服务状态')
-@click.argument('server', type=click.Choice(['all', 'ldap', 'http'], case_sensitive=False), default='all')
+@click.argument('server', type=click.Choice(['all', 'ldap', 'http', 'cron'], case_sensitive=False), default='all')
 def stop(server):
     server = [server]
     if 'all' in server:
-        server = ['ldap', 'http']
+        server = ['ldap', 'http', 'cron']
     pid_f = {
         'ldap': 'twistd.pid',
         'http': 'gunicorn.pid'
@@ -184,6 +223,13 @@ def stop(server):
     for s in server:
         info('关闭%s Server' % s.upper(), False)
 
+        if s == 'cron':
+            stop_cron()
+            echo('  完成')
+            line()
+
+            continue
+
         if not check_status(pid_f[s]):
             echo('  服务未启动，跳过')
         else:
@@ -191,6 +237,9 @@ def stop(server):
             os.kill(pid[s], 15)
             wait_server.append(s)
             info('')
+
+        if s == 'http':
+            subprocess.run([local_py, 'manage.py', 'crontab', 'remove'], capture_output=True)
 
         line()
     for s in wait_server:
@@ -200,6 +249,10 @@ def stop(server):
             info('  [完成]')
         else:
             warning('意外终止，请手动检查服务状态')
+
+
+def stop_cron():
+    subprocess.run([local_py, 'manage.py', 'crontab', 'remove'], capture_output=True)
 
 
 def wait_stop(pid):
