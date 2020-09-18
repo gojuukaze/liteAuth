@@ -23,7 +23,6 @@ class Command(BaseCommand):
     """
 
     def notify(self, user_info, days):
-        print(user_info, days)
         user = user_info.user
         user._user_info = user_info
         notify_user(user, NotificationType.PasswordExpiration, days=days)
@@ -35,7 +34,6 @@ class Command(BaseCommand):
         today = get_today_date()
         dates = [today - timedelta(days=(settings.MAX_PASSWORD_AGE - d)) for d in days]
 
-        print(dates)
         base_q = UserInfo.objects.filter(is_active=True, password_never_expire=False)
 
         for ui in base_q.filter(password_update_date__in=dates[:-1]):

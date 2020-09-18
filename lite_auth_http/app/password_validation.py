@@ -14,9 +14,7 @@ class UserInfoSimilarityValidator(UserAttributeSimilarityValidator):
     def validate(self, password, user=None):
         if not user:
             return
-        print(type(user))
         user_info = user.user_info
-        print(user_info)
         return super().validate(password, user_info)
 
 
