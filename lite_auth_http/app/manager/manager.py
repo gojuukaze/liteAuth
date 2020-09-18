@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.db import transaction
 
 from lite_auth_http import consts
@@ -22,4 +23,7 @@ def init2(data):
 def init(forms):
     with transaction.atomic():
         for f in forms:
-            f.save()
+            u = f.save()
+            if u.uid == settings.LDAP_USER:
+                u.password_never_expire = True
+                u.save()
