@@ -55,7 +55,10 @@ class UserAddForm(forms.ModelForm):
 
     def full_clean(self):
         super().full_clean()
-        if not self.is_bound or (self.empty_permitted and not self.has_changed()):  # Stop further processing.
+        print(self.is_valid())
+        if not self.is_bound or (self.empty_permitted and not self.has_changed()):
+            return
+        if 'password' in self.errors:
             return
         try:
             self._clean_password()
@@ -126,6 +129,7 @@ class UserAddWithGroupsForm(UserAddForm):
             if self.cleaned_data['groups']:
                 groups = [self.get_group(g) for g in self.cleaned_data['groups']]
                 user_info.groups.set(groups)
+        return user_info
 
 
 class ChangeUserPasswordForm(AdminPasswordChangeForm):
