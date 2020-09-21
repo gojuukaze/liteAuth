@@ -6,7 +6,7 @@ DEBUG = False
 http server 配置
 """
 HTTP_LISTEN = '0.0.0.0:8300'
-# 访问lite auth的url，填ip或域名
+# 访问lite auth的站点地址，填ip或域名
 LITE_AUTH_URL = 'http://127.0.0.1:8080'
 
 # 一定要以 / 结尾
@@ -69,7 +69,7 @@ LDAP_USER = 'ldap'
 # ----- LDAP_API -------
 
 # ldap server访问http server的路径
-LDAP_API_URL = urljoin(LITE_AUTH_URL, ADMIN_URL)
+LDAP_API_URL = 'http://127.0.0.1:8080'
 
 # LDAP_API请求的超时时间，秒
 # 一般不需要修改，

@@ -2,9 +2,6 @@ from lite_auth_http.lite_auth_http.settings_common import *
 from config import *
 from urllib import parse
 
-if not ALLOWED_HOSTS and not DEBUG:
-    u = parse.urlparse(LITE_AUTH_URL)
-    ALLOWED_HOSTS = [u.netloc]
 
 M_APPS = [
     'lite_auth_http.app',
