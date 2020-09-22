@@ -8,7 +8,6 @@ WORKDIR /app/liteauth
 ADD . .
 RUN mkdir docker_data
 RUN touch docker_data/config.py
-RUN mkdir /app/liteauth/docker_data/log
 
 EXPOSE 8300 
 EXPOSE 8389

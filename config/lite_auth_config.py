@@ -68,10 +68,11 @@ LDAP_USER = 'ldap'
 
 # ----- LDAP_API -------
 
-# ldap server访问http server的路径
+# http服务的地址，ldap服务会请求这个地址。
+# 一般写内网地址
 LDAP_API_URL = 'http://127.0.0.1:8080'
 
-# LDAP_API请求的超时时间，秒
+# LDAP_API http请求的超时时间，秒
 # 一般不需要修改，
 # 如果遇到errorMessage为HttpServerNeverReceived错误，可以尝试调大此项
 # (如果出现需要修改此项才能正常返回的情况，请反馈给我)
