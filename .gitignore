@@ -154,3 +154,5 @@ lite_auth_http/app/management/commands/mock2.py
 lite_auth_http/app/management/commands/mock.py
 
 custom
+# docker启动方式，用于保存配置、日志、静态文件的目录
+docker_data

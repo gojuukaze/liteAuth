@@ -11,6 +11,8 @@ from utils.file import gen_file_from_template
 
 local_py = sys.executable
 
+FLAG = 0
+
 
 def echo(s, nl=True):
     click.secho(s, nl=nl)
@@ -40,10 +42,11 @@ def cli():
 
 @cli.command(help='初始化')
 @click.option('-s', '--secret_key', help='secret_key，为空将自动生成。若环境变量中有LITE_AUTH_SECRET_KEY，则取环境变量中的值')
-def init(secret_key):
+@click.option('-d', '--docker_config', help='创建docker用的配置文件', is_flag=True, default=False)
+def init(secret_key, docker_config):
     echo('初始化')
     line()
-    create_config(secret_key)
+    create_config(secret_key, docker_config)
     line()
 
     collect_static()
@@ -55,9 +58,10 @@ def init(secret_key):
     mkdir()
     line()
     info('初始化完成')
+    sys.exit(FLAG)
 
 
-def create_config(secret_key):
+def create_config(secret_key, docker_config):
     info('创建配置文件')
     config_path = 'config/config.py'
     if os.path.exists(config_path):
@@ -67,22 +71,26 @@ def create_config(secret_key):
     if not secret_key:
         from django.core.management.utils import get_random_secret_key
         secret_key = get_random_secret_key()
-    gen_file_from_template('tpl/config.py.tpl', config_path, secret_key=secret_key)
+    template_file = 'tpl/config.py.tpl' if not docker_config else 'tpl/config-docker.py.tpl'
+    gen_file_from_template(template_file, config_path, secret_key=secret_key)
 
     info('[完成]')
 
 
 def collect_static():
+    global FLAG
     info('收集静态文件')
     r = subprocess.run([local_py, 'manage.py', 'collectstatic', '--noinput'])
 
     if r.returncode == 0:
         info('[完成]')
     else:
+        FLAG = 1
         error('收集静态文件失败')
 
 
 def make_migrations():
+    global FLAG
     info('迁移数据库')
     r1 = subprocess.run([local_py, 'manage.py', 'migrate'])
 
@@ -91,16 +99,19 @@ def make_migrations():
     if r1.returncode == 0 and r2.returncode == 0:
         info('[完成]')
     else:
+        FLAG = 1
         error('迁移数据库失败')
 
 
 def mkdir():
+    global FLAG
     info('创建必要目录')
     from config import LOG_PATH
     try:
         if not os.path.exists(LOG_PATH):
             os.mkdir(LOG_PATH)
     except:
+        FLAG = 1
         error('创建日志目录失败，请手动创建目录 %s ，并给予权限' % LOG_PATH)
     info('[完成]')
 
@@ -128,10 +139,14 @@ def start(server, nodaemon):
     if 'cron' in server:
         start_cron()
         line()
+    sys.exit(FLAG)
 
 
 def start_ldap(nodaemon):
-    twistd = os.path.join(os.path.dirname(local_py), 'twistd')
+    global FLAG
+    # 绝对路径可能会找不到twistd
+    # twistd = os.path.join(os.path.dirname(local_py), 'twistd')
+    twistd = 'twistd'
     info('启动LDAP Server')
     cmd = [twistd,
            '-n' if nodaemon else '',
@@ -141,11 +156,14 @@ def start_ldap(nodaemon):
     if r.returncode == 0:
         info('[完成]')
     else:
+        FLAG = 1
         error('启动失败')
 
 
 def start_http(nodaemon):
-    gunicorn = os.path.join(os.path.dirname(local_py), 'gunicorn')
+    global FLAG
+    # gunicorn = os.path.join(os.path.dirname(local_py), 'gunicorn')
+    gunicorn = 'gunicorn'
     info('启动HTTP Server')
     cmd = [gunicorn,
            'lite_auth_http.lite_auth_http.wsgi',
@@ -157,10 +175,12 @@ def start_http(nodaemon):
     if r.returncode == 0:
         info('[完成]')
     else:
+        FLAG = 1
         error('启动失败')
 
 
 def start_cron():
+    global FLAG
     info('创建定时任务')
 
     subprocess.run([local_py, 'manage.py', 'crontab', 'remove'])
@@ -168,20 +188,28 @@ def start_cron():
     if r.returncode == 0:
         info('[完成]')
     else:
+        FLAG = 1
         error('创建定时任务失败，但这不影响其他服务的运行，如果不需要可忽略')
 
 
 @cli.command(help='服务状态')
 def status():
+    global FLAG
     for s, f in [['LDAP Server', 'twistd.pid'], ['HTTP Server', 'gunicorn.pid']]:
         is_running = check_status(f)
         info(s, False)
         info('  [运行]' if is_running else '  [关闭]')
         line()
-        
+        if not is_running:
+            FLAG = 1
+
     is_running = check_cron_status()
     info('CRON Server  [运行]' if is_running else 'CRON Server    [关闭]')
     line()
+
+    if not is_running:
+        FLAG = 1
+    sys.exit(FLAG)
 
 
 def get_pid(pid_file):
