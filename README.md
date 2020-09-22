@@ -19,8 +19,11 @@ An tiny LDAP authentication server.
 > * git
 
 1. 从仓库拉取代码
-```shell script
-git clone 
+```bash
+git clone https://github.com/gojuukaze/liteAuth.git
 ```
 
-2. asd
+2. 安装包
+```shell script
+
+```
