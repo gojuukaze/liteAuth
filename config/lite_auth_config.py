@@ -1,4 +1,3 @@
-from urllib.parse import urljoin
 
 DEBUG = False
 
@@ -69,7 +68,7 @@ LDAP_USER = 'ldap'
 # ----- LDAP_API -------
 
 # http服务的地址，ldap服务会请求这个地址。
-# 一般写内网地址
+# 其实就是LITE_AUTH_URL，不过建议写内网地址
 LDAP_API_URL = 'http://127.0.0.1:8080'
 
 # LDAP_API http请求的超时时间，秒
