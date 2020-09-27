@@ -21,8 +21,8 @@ LiteAuth是一个基于LDAP精简的身份认证系统。
 ====
 
 -  github: https://github.com/gojuukaze/liteAuth
--  文档: https://doc.ikaze.com/liteAuth
--  接入liteAuth配置示例：
+-  文档: https://doc.ikaze.cn/liteauth
+-  :ref:`接入liteAuth配置示例<app>`
 
 LICENSE
 =======
@@ -39,8 +39,8 @@ liteAuth使用“liteauth扩展协议”以及”GPL3协议“，目前个人使
 
 |image1|
 
-.. _LICENSE-EMBEDDING: LICENSE-EMBEDDING
-.. _LICENSE: LICENSE
+.. _LICENSE-EMBEDDING: https://github.com/gojuukaze/liteAuth/blob/master/LICENSE-EMBEDDING
+.. _LICENSE: https://github.com/gojuukaze/liteAuth/blob/master/LICENSE
 
 .. |image1| image:: ../shang.jpg
             :scale: 70%
