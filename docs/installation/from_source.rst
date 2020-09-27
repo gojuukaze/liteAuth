@@ -68,9 +68,9 @@
    LDAP_LISTEN = '0.0.0.0:8389'
    # ldap api的地址，ldap服务会请求这个地址。
    # 其实就是LITE_AUTH_URL，不过建议写内网地址
-   LDAP_API_URL = 'http://192.168.x.x:8080'
+   LDAP_API_URL = 'http://127.0.0.1:8080'
 
-   # 通知backend，用于发通知给用户
+   # 通知backend，用于发通知给用户（具体说明参考 “配置”-“通知相关” ）
    NOTIFICATION_BACKEND={}
 
 .. note::

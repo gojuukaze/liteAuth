@@ -6,8 +6,6 @@ Docker安装
 1. 创建必要目录，修改配置  
 ===========================
 
-若在**非生产环境**并且使用nginx镜像可跳过这步
-
 .. code-block:: 
 
    mkdir liteauth_data
@@ -28,6 +26,14 @@ Docker安装
    # 其实就是LITE_AUTH_URL，不过建议写内网地址
    LDAP_API_URL = 'http://192.168.x.x:8080'
 
+   # 通知backend，用于发通知给用户（具体说明参考 “配置”-“通知相关” ）
+   NOTIFICATION_BACKEND={}
+
+.. note::
+
+   ``NOTIFICATION_BACKEND`` 不是必须的，但强烈建议你配置一个backend。
+   很多有的接入LDAP的服务并不会返回LDAP的错误信息，导致用户登录时不知道是什么原因造成登录失败。
+
 
 .. warning::
 
@@ -45,10 +51,12 @@ Docker安装
    -v /your_path/liteauth_data:/app/liteauth/docker_data \
    gojuukaze/liteauth:0.1.0
 
+.. _docker_set_secret_key:
 
 .. note::
 
-   你可以使用 ``-e LITE_AUTH_SECRET_KEY=xxx`` 指定 ``SECRET_KEY`` 
+   你可以使用 ``-e LITE_AUTH_SECRET_KEY=xxx`` 指定 ``SECRET_KEY``
+
    或者在 ``liteauth_data/config.py`` 中配置
 
 .. note::
@@ -59,6 +67,11 @@ Docker安装
 
    对于运行中的容器，使用 ``docker exec -it liteauth python manage.py show_secret_key``
    查看 ``SECRET_KEY``
+
+.. note:: 快速体验
+
+   如果只是为了快速体验，可以在配置中添加 `DEBUG=True` ，
+   运行后访问docker绑定的地址。
 
 
 3. 代理请求 
@@ -72,7 +85,7 @@ Docker安装
         listen       8080;
         server_name  192.168.x.x;
         
-        # 替换为你的路径
+        # 替换为第一步创建的路径
         root /your_path/liteauth_data;
         
         location / {

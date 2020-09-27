@@ -11,7 +11,10 @@ Welcome to LiteAuth
    :caption: 目录
 
    installation/index
+   backup_and_restore
+   upgrade
    config
+   develop
 
 
 
