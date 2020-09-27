@@ -204,7 +204,7 @@ def status():
             FLAG = 1
 
     is_running = check_cron_status()
-    info('CRON Server  [运行]' if is_running else 'CRON Server    [关闭]')
+    info('CRON Server  [运行]' if is_running else 'CRON Server  [关闭]')
     line()
 
     if not is_running:
@@ -230,7 +230,7 @@ def check_status(pid_file):
 
 def check_cron_status():
     r = subprocess.run([local_py, 'manage.py', 'crontab', 'show'], capture_output=True)
-    if len(r.stdout.split(b'\n')) > 1:
+    if len(r.stdout.split(b'\n')) > 2:
         return True
     return False
 
