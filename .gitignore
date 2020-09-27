@@ -158,3 +158,5 @@ custom
 docker_data
 
 /*.json
+
+docs/my_rtd_theme
