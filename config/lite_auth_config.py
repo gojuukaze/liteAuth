@@ -59,6 +59,7 @@ ldap server 配置
 """
 LDAP_LISTEN = '0.0.0.0:8389'
 
+# 最多返回多少用户
 SEARCH_LIMIT = 1000
 
 # 用于ldap请求的用户名，此用户不能登录管理后台，相当于只读用户

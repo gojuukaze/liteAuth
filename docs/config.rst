@@ -37,7 +37,7 @@ ldap服务配置
 
    :default: ``1000``
 
-   ldap的search limit
+   最多返回多少用户
 
 .. py:data:: LDAP_USER
 
@@ -73,6 +73,8 @@ ldap服务不是直接访问数据库，而是通过ldap api访问。
 
        LDAP_API登录凭证的有效期，秒 (同时也是ldap连接的超时时间)。ldap_bind会获取登录凭证以供后续请求验证身份
 
+.. _ldap_field_map:
+
 .. py:data:: LDAP_FIELD_MAP
 
    :default:
@@ -86,19 +88,25 @@ ldap服务不是直接访问数据库，而是通过ldap api访问。
             'ou': 'groups',
          }
 
-   ldap字段对应的liteAuth字段（key必须是全小写，value区分大小写）。
-   ldap请求时会把filter条件中的key替换为map中的值。
+   ldap字段对应的liteAuth字段 **（key必须是全小写，value区分大小写）** 。
+   search时会把filter条件中的key替换为map中的值；bind请求会把binddn中的key替换为map中的值
 
    用于已经配置了ldap的服务，不想改配置的参数，则修改此项。
+
+   比如，已经配置的bind的dn是："cn=admin,dc=xx"，通过添加 ``'cn':'uid'``
 
 .. py:data:: LITE_AUTH_FIELD_MAP
 
    :default: ``{}``
 
-   liteAuth字段对应的ldap字段（key区分大小写，value必须是全小写）。
+   liteAuth字段对应的ldap字段 **（key区分大小写，value必须是全小写）** 。
    ldap返回用户信息时，会把用户属性的key替换为map中的值。
 
    用于已经配置了ldap的服务，不想改配置的参数，则修改此项。
+
+   比如，已经配置了用户名是"givename"，
+   通过添加 ``'name':'givename'`` ，返回用户属性时就会使用 "givename" 代替 "name"
+
 
 ----------------------
 
@@ -364,6 +372,7 @@ postgresql
 
 
 4. 执行初始化（docker直接重启）
+
    .. code-block::
 
       ./lite_auth.py init

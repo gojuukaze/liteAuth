@@ -53,25 +53,25 @@ Docker安装
 
 .. _docker_set_secret_key:
 
-.. note::
+.. admonition:: 配置SECRET_KEY
 
    你可以使用 ``-e LITE_AUTH_SECRET_KEY=xxx`` 指定 ``SECRET_KEY``
 
    或者在 ``liteauth_data/config.py`` 中配置
 
-.. note::
+.. Tip::
 
-   使用``docker run -it gojuukaze/liteauth:0.1.0 ./lite_auth.py gen-secret-key`` 可以生成 ``SECRET_KEY``
+   使用 ``docker run -it gojuukaze/liteauth:0.1.0 ./lite_auth.py gen-secret-key`` 可以生成 ``SECRET_KEY``
 
-.. note::
+.. Tip::
 
-   对于运行中的容器，使用 ``docker exec -it liteauth python manage.py show_secret_key``
+   对于运行中的容器，可以使用 ``docker exec -it liteauth python manage.py show_secret_key``
    查看 ``SECRET_KEY``
 
-.. note:: 快速体验
+.. admonition:: 快速体验
 
-   如果只是为了快速体验，可以在配置中添加 `DEBUG=True` ，
-   运行后访问docker绑定的地址。
+   如果只是为了快速体验，可以在配置中添加 ``DEBUG=True`` ，把 ``LITE_AUTH_URL`` , ``LDAP_API_URL`` 的端口改为8300
+   ，运行后访问docker绑定的地址。
 
 
 3. 代理请求 
@@ -108,4 +108,6 @@ Docker安装
 4. 开始使用 
 ===============
 
-访问 http://192.168.x.x:8080 初始化并使用。注意：初始化页面只有第一次使用时能进入
+访问 http://192.168.x.x:8080 初始化并使用。注意：初始化页面只有第一次使用时能进入。
+
+接入ldap参考： :ref:`接入liteAuth配置示例<app>`
