@@ -141,6 +141,6 @@ LOG配置
 """
 LOG_PATH = './log'
 # 多大后切割，默认10mb
-LOG_MAX_BYTES = 1027 * 1024 * 10
+LOG_MAX_BYTES = 1024 * 1024 * 10
 # 保留几分
 LOG_BACKUP_COUNT = 10
