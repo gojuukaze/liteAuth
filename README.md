@@ -15,7 +15,6 @@ LiteAuth是一个基于LDAP精简的身份认证系统。
 * 文档: https://doc.ikaze.cn/liteauth
 * [接入liteAuth配置示例](https://doc.ikaze.cn/liteauth/ldap/app.html) 
 
-
 # LICENSE
 
 liteAuth使用“liteauth扩展协议"以及”GPL3协议“，目前个人使用，企业使用完全免费。  
@@ -23,6 +22,14 @@ liteAuth使用“liteauth扩展协议"以及”GPL3协议“，目前个人使�
 **需要特殊说明的是: 不允许在没有获得原作者授权的情况下，通过此项目获利**
 
 完整协议见：[LICENSE-EMBEDDING](LICENSE-EMBEDDING) , [LICENSE](LICENSE)
+
+# 运行截图
+
+![demo1.png](demo1.png)
+
+![demo2.png](demo2.png)
+
+![demo3.png](demo3.png)
 
 ------------
 
