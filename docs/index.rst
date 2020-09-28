@@ -33,6 +33,16 @@ liteAuth使用“liteauth扩展协议”以及”GPL3协议“，目前个人使
 
 完整协议见：\ `LICENSE-EMBEDDING`_ , `LICENSE`_
 
+
+运行截图
+=========
+|demo1|
+
+|demo2|
+
+|demo3|
+
+
 --------------
 
 开源不易，如果你觉得对你有帮助，求打赏个一块两块的
@@ -45,6 +55,13 @@ liteAuth使用“liteauth扩展协议”以及”GPL3协议“，目前个人使
 .. |image1| image:: ../shang.jpg
             :scale: 70%
 
+.. |demo1| image:: ../demo1.png
+            :scale: 70%
+.. |demo2| image:: ../demo2.png
+            :scale: 70%
+
+.. |demo3| image:: ../demo3.png
+            :scale: 70%
 
 .. toctree::
    :maxdepth: 2
