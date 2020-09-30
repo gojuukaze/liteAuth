@@ -12,7 +12,7 @@ LiteAuth是一个基于LDAP精简的身份认证系统。
 # 链接
 
 * github: https://github.com/gojuukaze/liteAuth
-* 文档: https://doc.ikaze.cn/liteauth
+* 文档: https://doc.ikaze.cn/liteauth/
 * [接入liteAuth配置示例](https://doc.ikaze.cn/liteauth/ldap/app.html) 
 
 # 运行截图
