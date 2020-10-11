@@ -41,7 +41,6 @@ LiteAuth是一个基于LDAP精简的身份认证系统。
 
 |image1|
 
-.. _LICENSE-EMBEDDING: https://github.com/gojuukaze/liteAuth/blob/master/LICENSE-EMBEDDING
 .. _LICENSE: https://github.com/gojuukaze/liteAuth/blob/master/LICENSE
 
 .. |image1| image:: ../shang.jpg
@@ -66,6 +65,7 @@ LiteAuth是一个基于LDAP精简的身份认证系统。
    develop
    ldap/index
    faq
+   donate
 
 
 

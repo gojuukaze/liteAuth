@@ -89,7 +89,7 @@
    ./lite_auth.py start
    # 你可以使用 ./lite_auth.py start --help 查看帮助
 
-.. note::
+.. admonition:: 快速体验
 
    如果只是为了快速体验，可以在配置中添加 `DEBUG=True` 
    并把 ``LITE_AUTH_URL`` ， ``LDAP_API_URL`` 修改为 ``HTTP_LISTEN`` 的地址，运行后直接访问。

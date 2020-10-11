@@ -31,6 +31,7 @@
 
    python manage.py loaddata mybk.json
 
+-----------------------------
 
 docker安装备份数据库
 ====================
@@ -44,6 +45,17 @@ docker安装备份数据库
 
 复制 ``/your_path/liteauth_data`` 下的 ``mybk.json``
 
+.. _backup_secret_key:
+
+.. admonition:: 备份SECRET_KEY
+
+   如果你是从docker安装，且启动时没有配置过 ``SECRET_KEY`` 。备份时运行下面命令查看 ``SECRET_KEY`` 并保存，
+   再次启动时需要指定用这个SECRET_KEY。
+
+   .. code-block::
+
+      docker exec -it liteauth python manage.py show_secret_key
+
 恢复
 -------
 恢复前要把容器运行起来
@@ -54,13 +66,3 @@ docker安装备份数据库
 
    docker exec -it liteauth python manage.py loaddata /app/liteauth/docker_data/mybk.json
 
-.. _backup_secret_key:
-
-.. note::
-
-   如果你是从docker安装，且启动时没有配置过 ``SECRET_KEY`` 。备份时运行下面命令查看 ``SECRET_KEY`` 并保存，
-   在启动时需要指定用这个SECRET_KEY。
-
-   .. code-block::
-
-      docker exec -it liteauth python manage.py show_secret_key

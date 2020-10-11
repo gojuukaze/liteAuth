@@ -14,6 +14,8 @@
    ./lite_auth.py init
    ./lite_auth.py start
 
+-------------------
+
 docker安装升级
 ===================
 
