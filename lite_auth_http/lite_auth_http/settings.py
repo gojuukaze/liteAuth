@@ -2,10 +2,9 @@ from lite_auth_http.lite_auth_http.settings_common import *
 from config import *
 from urllib import parse
 
-
 M_APPS = [
-    'lite_auth_http.app',
-    'lite_auth_http.app.apps.LiteAuthAdminConfig'
+    'lite_auth_http.app.apps.MAppConfig',
+    'lite_auth_http.lite_auth_http.apps.LiteAuthAdminConfig',
 
 ]
 INSTALLED_APPS += M_APPS
@@ -122,3 +121,31 @@ if 'crontab' in PASSWORD_EXPIRATION_NOTIFICATION:
         (PASSWORD_EXPIRATION_NOTIFICATION['crontab'], 'django.core.management.call_command',
          ['notify_password_expiration']),
     ]
+
+# simpleui ui配置
+SIMPLEUI_LOGO = ' '
+SIMPLEUI_ANALYSIS = False
+
+SIMPLEUI_HOME_INFO = False
+
+SIMPLEUI_CONFIG = {
+    'system_keep': True,
+
+    'dynamic': False,
+    'menus': [
+        {
+            'name': '功能',
+            'icon': 'fas fa-code',
+            'models': [
+                {
+                    'name': '从CSV导入',
+                    'url': 'import_user/'
+                },
+                {
+                    'name': '修改密码',
+                    'url': 'password_change/'
+                }
+            ]
+        },
+    ]
+}

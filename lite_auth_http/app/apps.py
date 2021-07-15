@@ -3,13 +3,8 @@ from django.contrib.admin.apps import AdminConfig
 
 
 class MAppConfig(AppConfig):
-    name = 'app'
+    default_auto_field = 'django.db.models.BigAutoField'
 
-class LiteAuthAdminConfig(AdminConfig):
-    default_site = 'lite_auth_http.app.admin_site.LiteAuthAdminSite'
-
-    def ready(self):
-        super().ready()
-        self.module.autodiscover()
-
+    # 升级django3.2后，由于manage.py和django项目不在同一层，name前面需要加上lite_auth_http
+    name = 'lite_auth_http.app'
 

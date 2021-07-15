@@ -55,7 +55,6 @@ class UserAddForm(forms.ModelForm):
 
     def full_clean(self):
         super().full_clean()
-        print(self.is_valid())
         if not self.is_bound or (self.empty_permitted and not self.has_changed()):
             return
         if 'password' in self.errors:

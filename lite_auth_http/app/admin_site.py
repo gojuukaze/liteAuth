@@ -26,6 +26,7 @@ class LiteAuthAdminSite(AdminSite):
             return False
         return request.user.user_info.is_active and not request.user.is_ldap_user()
 
+    password_change_template='admin_ex/password_change_form.html'
     def password_change(self, request, extra_context=None):
         from django.contrib.admin.forms import AdminPasswordChangeForm
         url = reverse('admin:password_change_done', current_app=self.name)
@@ -53,9 +54,9 @@ class LiteAuthAdminSite(AdminSite):
             return update_wrapper(wrapper, view)
 
         from django.urls import path
-        urlpatterns += [path('import_user/', wrap(self.import_user), name='import_user'),
-                        path('demo.csv', wrap(self.csv_demo), name='csv_demo'),
-                        ]
+        urlpatterns = [path('import_user/', wrap(self.import_user), name='import_user'),
+                       path('demo.csv', wrap(self.csv_demo), name='csv_demo'),
+                       ] + urlpatterns
 
         return urlpatterns
 

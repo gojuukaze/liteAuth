@@ -1,4 +1,4 @@
-Django==3.1.1
+Django==3.2.5
 gunicorn==20.0.4
 ldaptor==19.1.0
 treq==20.4.1
