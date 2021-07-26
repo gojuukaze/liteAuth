@@ -27,12 +27,27 @@ Docker安装
    LDAP_API_URL = 'http://192.168.x.x:8080'
 
    # 通知backend，用于发通知给用户（具体说明参考 “配置”-“通知相关” ）
+   # - NOTIFICATION_BACKEND 不是必须的，但强烈建议你配置一个backend。
+   # - 很多有的接入LDAP的服务并不会返回LDAP的错误信息，导致用户登录时不知道是什么原因造成登录失败。
    NOTIFICATION_BACKEND={}
 
-.. note::
+   # 若不设置SECRET_KEY，运行时会随机生成
+   # SECRET_KEY='xx'
 
-   ``NOTIFICATION_BACKEND`` 不是必须的，但强烈建议你配置一个backend。
-   很多有的接入LDAP的服务并不会返回LDAP的错误信息，导致用户登录时不知道是什么原因造成登录失败。
+
+.. _docker_set_secret_key:
+
+.. admonition:: 关于SECRET_KEY
+
+   * ``SECRET_KEY`` 非常重要，请妥善保存，迁移服务或者重启时必须使用相同的key
+
+   * 启动时可以使用 ``-e LITE_AUTH_SECRET_KEY=xxx`` 指定 ``SECRET_KEY`` ;
+
+     或者在 ``config.py`` 中配置
+
+   * 对于运行中的容器，可以使用 ``docker exec -it liteauth python manage.py show_secret_key`` 查看 ``SECRET_KEY``
+
+   * 使用 ``docker run -it gojuukaze/liteauth:0.1.0 ./lite_auth.py gen-secret-key`` 可以生成 ``SECRET_KEY``
 
 
 .. warning::
@@ -50,23 +65,6 @@ Docker安装
    -p 8300:8300 -p 8389:8389 \
    -v /your_path/liteauth_data:/app/liteauth/docker_data \
    gojuukaze/liteauth:0.1.0
-
-.. _docker_set_secret_key:
-
-.. admonition:: 配置SECRET_KEY
-
-   你可以使用 ``-e LITE_AUTH_SECRET_KEY=xxx`` 指定 ``SECRET_KEY``
-
-   或者在 ``liteauth_data/config.py`` 中配置
-
-.. Tip::
-
-   使用 ``docker run -it gojuukaze/liteauth:0.1.0 ./lite_auth.py gen-secret-key`` 可以生成 ``SECRET_KEY``
-
-.. Tip::
-
-   对于运行中的容器，可以使用 ``docker exec -it liteauth python manage.py show_secret_key``
-   查看 ``SECRET_KEY``
 
 .. admonition:: 快速体验
 
